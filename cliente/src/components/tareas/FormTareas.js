@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import proyectoContext from '../../context/proyectos/proyectoContext';
 import tareaContext from '../../context/tareas/tareaContext';
 import {v4 as uuid} from 'uuid'
@@ -11,7 +11,18 @@ const FormTareas = () => {
    
     //obtener el state de la tarea para poder reutilizarlo
     const tareasContext = useContext(tareaContext)
-    const { agregarTarea, obtenerTareas, errortarea, validarTarea } = tareasContext
+    const { tareaseleccionada, agregarTarea, obtenerTareas, errortarea, validarTarea, actualizarTarea, limpiarTarea } = tareasContext
+
+
+    useEffect(() => {
+        if(tareaseleccionada !== null) {
+            guardarTarea(tareaseleccionada)
+        }else{
+            guardarTarea({
+                nombre: ''
+            })
+        }
+    }, [tareaseleccionada])
 
 
     //state para form de tarea
@@ -41,13 +52,19 @@ const FormTareas = () => {
             return 
         }
 
-        //agregar tarae nueva
-        tarea.id = uuid()
-        tarea.proyectoId = proyectoseleccionado.id
-        tarea.estado = false
+        if(tareaseleccionada === null){
+            //agregar tarae nueva
+            tarea.id = uuid()
+            tarea.proyectoId = proyectoseleccionado.id
+            tarea.estado = false
 
+            agregarTarea(tarea)
+        }else{
+            actualizarTarea(tarea)
 
-        agregarTarea(tarea)
+            //eliminar tareaseleccionada del state
+            limpiarTarea()
+        }
         
         //obtener y filtrar las tareas del proyecto actual
         obtenerTareas(proyectoseleccionado.id)
@@ -79,7 +96,7 @@ const FormTareas = () => {
                     <input
                         type="submit"
                         className="btn btn-primario btn-submit btn-block"
-                        value="Agregar Tarea"
+                        value={tareaseleccionada ? 'Editar Tarea' : 'Agregar Tarea'}
 
                     />
 

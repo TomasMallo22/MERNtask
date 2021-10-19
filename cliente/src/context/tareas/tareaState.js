@@ -1,9 +1,15 @@
 import React, { useReducer } from 'react'
+
 import { 
     TAREAS_PROYECTO,
     AGREGAR_TAREA,
-    VALIDAR_TAREA
+    VALIDAR_TAREA,
+    ELIMINAR_TAREA,
+    TAREA_ACTUAL,
+    ACTUALIZAR_TAREA,
+    LIMPIAR_TAREA
 } from '../../types'
+
 import TareaContext from './tareaContext'
 import tareaReducer from './tareaReducer'
 
@@ -20,7 +26,8 @@ const TareaState = props => {
             {id: 8 ,nombre:'Boton pagar', estado: false, proyectoId: 2}
         ],
         tareasproyecto: null,
-        errortarea: false
+        errortarea: false, 
+        tareaseleccionada: null
     }
 
     //crear dispatch y state 
@@ -49,14 +56,47 @@ const TareaState = props => {
         })
     }
 
+    const eliminarTarea = tareaId => {
+        dispatch({
+            type: ELIMINAR_TAREA,
+            payload: tareaId
+        })
+    }
+
+    const actualizarTarea = tarea => {
+        dispatch({
+            type: ACTUALIZAR_TAREA,
+            payload: tarea
+        })
+    }
+    
+    const guardarTareaActual = tarea => {
+        dispatch({
+            type: TAREA_ACTUAL,
+            payload: tarea
+        })
+    }
+
+    //eliminar la tareaseleccionada 
+    const limpiarTarea = () => {
+        dispatch({
+            type: LIMPIAR_TAREA,
+        })
+    }
+
     return (
         <TareaContext.Provider
             value={{
                 tareasproyecto: state.tareasproyecto,
                 errortarea: state.errortarea,
+                tareaseleccionada: state.tareaseleccionada,
                 obtenerTareas,
                 agregarTarea,
                 validarTarea,
+                eliminarTarea,
+                actualizarTarea,
+                guardarTareaActual,
+                limpiarTarea
             }}
         >
             {props.children}

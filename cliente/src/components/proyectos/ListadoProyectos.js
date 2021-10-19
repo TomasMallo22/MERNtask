@@ -1,5 +1,6 @@
-import React, {useContext, useEffect} from 'react'
+import React, {Fragment, useContext, useEffect} from 'react'
 import Proyecto from './Proyecto'
+import {CSSTransition, TransitionGroup} from 'react-transition-group'
 
 
 import proyectoContext from '../../context/proyectos/proyectoContext';
@@ -13,18 +14,34 @@ const ListadoProyectos = () => {
         obtenerProyectos()
     }, [])
 
-    if(proyectos.length === 0) return <p>No hay proyectos, comenza creando uno nuevo</p>
+    // if(proyectos.length === 0) return <p>No hay proyectos, comenza creando uno nuevo</p>
 
     return ( 
-
-        <ul className="listado-proyectos">
-            {proyectos.map(proyecto =>(
-             <Proyecto
-                key={proyecto.id}
-                proyecto={proyecto}
-             />
-            ))}
-        </ul>
+    <Fragment>
+        
+        {proyectos.length === 0 
+        
+        ? <p className="mensaje error">No hay proyectos, comenza creando uno nuevo</p>
+        :
+        
+                <ul className="listado-proyectos">
+                    <TransitionGroup>  
+                        {proyectos.map(proyecto =>(
+                            <CSSTransition
+                                key={proyecto.id}
+                                timeout={500}
+                                classNames="proyecto"
+                            >
+                                <Proyecto
+                                    proyecto={proyecto}
+                                />
+                            </CSSTransition>  
+                        ))}
+                    </TransitionGroup>
+                </ul>
+        
+        }
+    </Fragment> 
      );
 }
  
